@@ -55,12 +55,12 @@ in
       RuntimeDirectory = "prometheus-mongodb-exporter";
       ExecStart = ''
         ${getExe pkgs.prometheus-mongodb-exporter} \
-          --mongodb.uri=${cfg.uri}
+          --mongodb.uri="${cfg.uri}" \
           ${if cfg.collectAll then "--collect-all" else concatMapStringsSep " " (x: "--collect.${x}") cfg.collector} \
-          --collector.collstats=${concatStringsSep "," cfg.collStats} \
-          --collector.indexstats=${concatStringsSep "," cfg.indexStats} \
-          --web.listen-address=${cfg.listenAddress}:${toString cfg.port} \
-          --web.telemetry-path=${cfg.telemetryPath} \
+          --collector.collstats-colls="${concatStringsSep "," cfg.collStats}" \
+          --collector.indexstats-colls="${concatStringsSep "," cfg.indexStats}" \
+          --web.listen-address="${cfg.listenAddress}:${toString cfg.port}" \
+          --web.telemetry-path="${cfg.telemetryPath}" \
           ${escapeShellArgs cfg.extraFlags}
       '';
     };
