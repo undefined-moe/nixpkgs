@@ -57,8 +57,8 @@ in
         ${getExe pkgs.prometheus-mongodb-exporter} \
           --mongodb.uri=${cfg.uri}
           ${if cfg.collectAll then "--collect-all" else concatMapStringsSep " " (x: "--collect.${x}") cfg.collector} \
-          --collector.collstats=${concatStringsSep "," cfg.collStats} \
-          --collector.indexstats=${concatStringsSep "," cfg.indexStats} \
+          ${optionalString (length cfg.collStats > 0) "--mongodb.collstats-colls=${concatStringsSep "," cfg.collStats}"} \
+          ${optionalString (length cfg.indexStats > 0) "--mongodb.indexstats-colls=${concatStringsSep "," cfg.indexStats}"} \
           --web.listen-address=${cfg.listenAddress}:${toString cfg.port} \
           --web.telemetry-path=${cfg.telemetryPath} \
           ${escapeShellArgs cfg.extraFlags}
