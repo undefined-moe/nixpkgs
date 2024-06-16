@@ -1,7 +1,6 @@
 { lib
 , stdenv
 , fetchFromGitHub
-, fetchpatch
 , cmake
 , pkg-config
 , wrapQtAppsHook
@@ -12,7 +11,7 @@
 , curl
 , enet
 , ffmpeg
-, fmt_8
+, fmt_10
 , gtest
 , hidapi
 , libevdev
@@ -24,6 +23,7 @@
 , libXdmcp
 , libXext
 , libXrandr
+, lz4
 , lzo
 , mbedtls_2
 , miniupnpc
@@ -32,6 +32,7 @@
 , pugixml
 , qtbase
 , qtsvg
+, SDL2
 , sfml
 , udev
 , vulkan-loader
@@ -57,49 +58,36 @@
 
 stdenv.mkDerivation rec {
   pname = "dolphin-emu";
-  version = "5.0-19870";
+  version = "5.0-21460";
 
   src = fetchFromGitHub {
     owner = "dolphin-emu";
     repo = "dolphin";
-    rev = "032c77b462a220016f23c5079e71bb23e0ad2adf";
-    sha256 = "sha256-TgRattksYsMGcbfu4T5mCFO9BkkHRX0NswFxGwZWjEw=";
+    rev = "a9544510468740b77cf06ef28daaa65fe247fd32";
+    hash = "sha256-mhD7Uaqi8GzHdR7Y81TspvCnrZH2evWuWFgXMQ2c8g0=";
     fetchSubmodules = true;
   };
 
   patches = [
-    (fetchpatch {
-      url = "https://github.com/dolphin-emu/dolphin/commit/c43c9101c07376297abbbbc40ef9a1965a1681cd.diff";
-      sha256 = "sha256-yHlyG86ta76YKrJsyefvFh521dNbQOqiPOpRUVxKuZM=";
-    })
-    # Remove when merged https://github.com/dolphin-emu/dolphin/pull/12070
+    # TODO: Remove when merged https://github.com/dolphin-emu/dolphin/pull/12736
     ./find-minizip-ng.patch
   ];
 
   strictDeps = true;
 
   nativeBuildInputs = [
-    stdenv.cc
     cmake
     pkg-config
     wrapQtAppsHook
   ];
 
-  buildInputs = lib.optionals stdenv.isDarwin [
-    CoreBluetooth
-    ForceFeedback
-    IOBluetooth
-    IOKit
-    moltenvk
-    OpenGL
-    VideoToolbox
-  ] ++ [
+  buildInputs = [
     bzip2
     cubeb
     curl
     enet
     ffmpeg
-    fmt_8
+    fmt_10
     gtest
     hidapi
     libiconv
@@ -107,6 +95,7 @@ stdenv.mkDerivation rec {
     libspng
     libusb1
     libXdmcp
+    lz4
     lzo
     mbedtls_2
     miniupnpc
@@ -115,9 +104,12 @@ stdenv.mkDerivation rec {
     pugixml
     qtbase
     qtsvg
+    SDL2
     sfml
     xxHash
-    xz # LibLZMA
+    xz
+    # Causes linker errors with minizip-ng, prefer vendored. Possible reason why: https://github.com/dolphin-emu/dolphin/pull/12070#issuecomment-1677311838
+    #zlib-ng
   ] ++ lib.optionals stdenv.isLinux [
     alsa-lib
     bluez
@@ -129,6 +121,14 @@ stdenv.mkDerivation rec {
     #mgba # Derivation doesn't support Darwin
     udev
     vulkan-loader
+  ] ++ lib.optionals stdenv.isDarwin [
+    CoreBluetooth
+    ForceFeedback
+    IOBluetooth
+    IOKit
+    moltenvk
+    OpenGL
+    VideoToolbox
   ];
 
   cmakeFlags = [
@@ -153,13 +153,6 @@ stdenv.mkDerivation rec {
     # The .desktop file should already set this, but Dolphin may be launched in other ways
     "--set QT_QPA_PLATFORM xcb"
   ];
-
-  # Use nix-provided libraries instead of submodules
-  postPatch = lib.optionalString stdenv.isDarwin ''
-    substituteInPlace CMakeLists.txt \
-      --replace "if(NOT APPLE)" "if(true)" \
-      --replace "if(LIBUSB_FOUND AND NOT APPLE)" "if(LIBUSB_FOUND)"
-  '';
 
   postInstall = lib.optionalString stdenv.hostPlatform.isLinux ''
     install -D $src/Data/51-usb-device.rules $out/etc/udev/rules.d/51-usb-device.rules
@@ -196,9 +189,7 @@ stdenv.mkDerivation rec {
     license = licenses.gpl2Plus;
     platforms = platforms.unix;
     maintainers = with maintainers; [
-      MP2E
       ashkitten
-      xfix
       ivar
     ];
   };

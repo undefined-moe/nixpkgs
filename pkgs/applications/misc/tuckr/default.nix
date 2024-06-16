@@ -8,20 +8,19 @@ rustPlatform.buildRustPackage rec {
     owner = "RaphGL";
     repo = "Tuckr";
     rev = version;
-    sha256 = "sha256-S4mHNCyK7WGYRBckxQkwA3+eu7QhUyKkOZ/KqhMJf+s=";
+    hash = "sha256-S4mHNCyK7WGYRBckxQkwA3+eu7QhUyKkOZ/KqhMJf+s=";
   };
 
- cargoLock = {
-    lockFile = ./Cargo.lock;
-  };
+  cargoHash = "sha256-aUhiMJUKV+Da3WLUY9Jr3oDB8yqcUm0pP05yKaITjM0=";
 
   doCheck = false; # test result: FAILED. 5 passed; 3 failed;
 
   meta = with lib; {
-    description = "A super powered replacement for GNU Stow";
+    description = "Super powered replacement for GNU Stow";
     homepage = "https://github.com/RaphGL/Tuckr";
     changelog = "https://github.com/RaphGL/Tuckr/releases/tag/${version}";
     license = licenses.gpl3Plus;
     maintainers = with maintainers; [ mimame ];
+    mainProgram = "tuckr";
   };
 }

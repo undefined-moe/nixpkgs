@@ -1,11 +1,13 @@
-{ buildPythonPackage
-, fetchPypi
-, lib
+{
+  buildPythonPackage,
+  fetchPypi,
+  lib,
 }:
 
 buildPythonPackage rec {
   pname = "jsonrpclib-pelix";
   version = "0.4.3.2";
+  format = "setuptools";
 
   src = fetchPypi {
     inherit pname version;

@@ -2,11 +2,11 @@
 
 stdenv.mkDerivation (finalAttrs: {
   pname = "sqlcl";
-  version = "23.2.0.178.1027";
+  version = "24.1.0.087.0929";
 
   src = fetchurl {
     url = "https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-${finalAttrs.version}.zip";
-    hash = "sha256-wGqLlV88yYJrVblKzeG6VerfsEgCi1JQd49ONZmUB4Y=";
+    hash = "sha256-DHp3Wrwro1oaBEw1O7cyRGJKbhD2z86MeY2Xq2vzo1Q=";
   };
 
   nativeBuildInputs = [ makeWrapper unzip ];

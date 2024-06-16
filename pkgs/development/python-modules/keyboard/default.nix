@@ -1,10 +1,13 @@
-{ lib
-, buildPythonPackage
-, fetchFromGitHub }:
+{
+  lib,
+  buildPythonPackage,
+  fetchFromGitHub,
+}:
 
 buildPythonPackage rec {
   pname = "keyboard";
   version = "0.13.5";
+  format = "setuptools";
 
   src = fetchFromGitHub {
     owner = "boppreh";

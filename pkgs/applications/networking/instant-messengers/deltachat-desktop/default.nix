@@ -1,10 +1,11 @@
 { lib
 , buildNpmPackage
 , copyDesktopItems
-, electron_26
+, electron_28
 , buildGoModule
 , esbuild
 , fetchFromGitHub
+, jq
 , libdeltachat
 , makeDesktopItem
 , makeWrapper
@@ -22,12 +23,12 @@
 let
   esbuild' = esbuild.override {
     buildGoModule = args: buildGoModule (args // rec {
-      version = "0.14.54";
+      version = "0.19.8";
       src = fetchFromGitHub {
         owner = "evanw";
         repo = "esbuild";
         rev = "v${version}";
-        hash = "sha256-qCtpy69ROCspRgPKmCV0YY/EOSWiNU/xwDblU0bQp4w=";
+        hash = "sha256-f13YbgHFQk71g7twwQ2nSOGA0RG0YYM01opv6txRMuw=";
       };
       vendorHash = "sha256-+BfxCyg0KkDQpHt/wycy/8CTG6YBA/VJvJFhhzUnSiQ=";
     });
@@ -35,18 +36,26 @@ let
 in
 buildNpmPackage rec {
   pname = "deltachat-desktop";
-  version = "1.41.4";
+  version = "1.44.1";
 
   src = fetchFromGitHub {
     owner = "deltachat";
     repo = "deltachat-desktop";
     rev = "v${version}";
-    hash = "sha256-T2EPCYQ2N414sUEqpXtx459sZZXOnHgXM0/dz3Wi9hw=";
+    hash = "sha256-fL+9oPQ5dAgvQREZ7A+hKo2MnZKeVvadQDvDPsDNbnQ=";
   };
 
-  npmDepsHash = "sha256-q60qrTN6H1AfJGhula8dzRwnKw2l+X0BOIvnKZh5t2s=";
+  npmDepsHash = "sha256-rUxJLDsAfp+brecTThYTdHIVIfVkKwZ/W5sHV0hHHIk=";
+
+  postPatch = ''
+    test \
+      $(jq -r '.packages."node_modules/@deltachat/jsonrpc-client".version' package-lock.json) \
+      = $(pkg-config --modversion deltachat) \
+      || (echo "error: libdeltachat version does not match jsonrpc-client" && exit 1)
+  '';
 
   nativeBuildInputs = [
+    jq
     makeWrapper
     pkg-config
     python3
@@ -94,7 +103,7 @@ buildNpmPackage rec {
         $out/lib/node_modules/deltachat-desktop/html-dist/fonts
     done
 
-    makeWrapper ${electron_26}/bin/electron $out/bin/deltachat \
+    makeWrapper ${lib.getExe electron_28} $out/bin/deltachat \
       --set LD_PRELOAD ${sqlcipher}/lib/libsqlcipher${stdenv.hostPlatform.extensions.sharedLibrary} \
       --add-flags $out/lib/node_modules/deltachat-desktop
 

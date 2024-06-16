@@ -8,10 +8,12 @@ let
   pname = "losslesscut";
   version = "3.58.0";
   metaCommon = with lib; {
-    description = "The swiss army knife of lossless video/audio editing";
+    description = "Swiss army knife of lossless video/audio editing";
     homepage = "https://mifi.no/losslesscut/";
     license = licenses.gpl2Only;
     maintainers = with maintainers; [ ShamrockLee ];
+    mainProgram = "losslesscut";
+    sourceProvenance = with sourceTypes; [ binaryNativeCode ];
   };
   x86_64-appimage = callPackage ./build-from-appimage.nix {
     inherit pname version metaCommon;

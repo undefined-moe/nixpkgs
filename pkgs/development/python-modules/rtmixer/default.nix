@@ -1,17 +1,19 @@
-{ fetchFromGitHub
-, buildPythonPackage
-, isPy27
-, cython
-, portaudio
-, cffi
-, pa-ringbuffer
-, sounddevice
-, lib
+{
+  fetchFromGitHub,
+  buildPythonPackage,
+  isPy27,
+  cython,
+  portaudio,
+  cffi,
+  pa-ringbuffer,
+  sounddevice,
+  lib,
 }:
 
 buildPythonPackage rec {
   pname = "rtmixer";
   version = "0.1.4";
+  format = "setuptools";
   disabled = isPy27;
 
   src = fetchFromGitHub {

@@ -1,18 +1,20 @@
-{ lib
-, fetchPypi
-, buildPythonPackage
-, six
-, udev
-, pytest
-, mock
-, hypothesis
-, docutils
-, stdenvNoCC
+{
+  lib,
+  fetchPypi,
+  buildPythonPackage,
+  six,
+  udev,
+  pytest,
+  mock,
+  hypothesis,
+  docutils,
+  stdenvNoCC,
 }:
 
 buildPythonPackage rec {
   pname = "pyudev";
   version = "0.24.1";
+  format = "setuptools";
 
   src = fetchPypi {
     inherit pname version;
@@ -22,9 +24,14 @@ buildPythonPackage rec {
   postPatch = lib.optionalString stdenvNoCC.isLinux ''
     substituteInPlace src/pyudev/_ctypeslib/utils.py \
       --replace "find_library(name)" "'${lib.getLib udev}/lib/libudev.so'"
-    '';
+  '';
 
-  nativeCheckInputs = [ pytest mock hypothesis docutils ];
+  nativeCheckInputs = [
+    pytest
+    mock
+    hypothesis
+    docutils
+  ];
   propagatedBuildInputs = [ six ];
 
   checkPhase = ''

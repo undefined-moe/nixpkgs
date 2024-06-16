@@ -1,46 +1,43 @@
-{ lib
-, stdenv
-, buildPythonPackage
-, cargo
-, fetchFromGitHub
-, fetchpatch
-, libiconv
-, Foundation
-, rustPlatform
-, rustc
-, setuptools-rust
-, range-typed-integers
+{
+  lib,
+  stdenv,
+  buildPythonPackage,
+  cargo,
+  fetchPypi,
+  libiconv,
+  Foundation,
+  rustPlatform,
+  rustc,
+  setuptools-rust,
+  range-typed-integers,
 }:
 
 buildPythonPackage rec {
   pname = "skytemple-rust";
-  version = "1.5.3";
+  version = "1.6.5";
+  pyproject = true;
 
-  src = fetchFromGitHub {
-    owner = "SkyTemple";
-    repo = pname;
-    rev = version;
-    hash = "sha256-Txx8kQNb3ODbaJXfuHERzPx4zGUqYXzy+jbLNaMyf+w=";
+  src = fetchPypi {
+    inherit pname version;
+    hash = "sha256-bf+umrb5EIoCD2kheVpf9IwsW4Sf2hR7XOEzscYtLA8=";
   };
 
   cargoDeps = rustPlatform.fetchCargoTarball {
     inherit src;
     name = "${pname}-${version}";
-    hash = "sha256-KQA8dfHnuysx9EUySJXZ/52Hfq6AbALwkBp3B1WJJuc=";
+    hash = "sha256-0a57RmZPztcIeRs7GNYe18JO+LlWoeNWG3nD9cG0XIU=";
   };
 
-  patches = [
-    # Necessary for python3Packages.skytemple-files tests to pass.
-    # https://github.com/SkyTemple/skytemple-files/issues/449
-    (fetchpatch {
-      url = "https://github.com/SkyTemple/skytemple-rust/commit/eeeac215c58eda2375dc499aaa1950df0e859802.patch";
-      hash = "sha256-9oUrwI+ZMI0Pg8F/nzLkf0YNkO9WSMkUAqDk4GuGfQo=";
-      includes = [ "src/st_kao.rs" ];
-    })
+  buildInputs = lib.optionals stdenv.isDarwin [
+    libiconv
+    Foundation
   ];
-
-  buildInputs = lib.optionals stdenv.isDarwin [ libiconv Foundation ];
-  nativeBuildInputs = [ setuptools-rust rustPlatform.cargoSetupHook cargo rustc ];
+  nativeBuildInputs = [
+    setuptools-rust
+    rustPlatform.cargoSetupHook
+    cargo
+    rustc
+  ];
   propagatedBuildInputs = [ range-typed-integers ];
 
   GETTEXT_SYSTEM = true;
@@ -52,6 +49,6 @@ buildPythonPackage rec {
     homepage = "https://github.com/SkyTemple/skytemple-rust";
     description = "Binary Rust extensions for SkyTemple";
     license = licenses.mit;
-    maintainers = with maintainers; [ xfix marius851000 ];
+    maintainers = with maintainers; [ marius851000 ];
   };
 }

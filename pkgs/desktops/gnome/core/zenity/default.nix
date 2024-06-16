@@ -14,13 +14,13 @@
 , wrapGAppsHook4
 }:
 
-stdenv.mkDerivation rec {
+stdenv.mkDerivation (finalAttrs: {
   pname = "zenity";
-  version = "3.99.2";
+  version = "4.0.1";
 
   src = fetchurl {
-    url = "mirror://gnome/sources/zenity/${lib.versions.majorMinor version}/${pname}-${version}.tar.xz";
-    sha256 = "oZR4kGuYi082fl6mOlkh5PmMuCVbugXrXK2LWhikFo8=";
+    url = "mirror://gnome/sources/zenity/${lib.versions.majorMinor finalAttrs.version}/zenity-${finalAttrs.version}.tar.xz";
+    sha256 = "DC9TeBOxD3KEcNnQXWyVcT2yUS+clQluHoWxpnOWBeY=";
   };
 
   nativeBuildInputs = [
@@ -49,9 +49,9 @@ stdenv.mkDerivation rec {
   meta = with lib; {
     mainProgram = "zenity";
     description = "Tool to display dialogs from the commandline and shell scripts";
-    homepage = "https://wiki.gnome.org/Projects/Zenity";
+    homepage = "https://gitlab.gnome.org/GNOME/zenity";
     license = licenses.lgpl21Plus;
     platforms = platforms.unix;
     maintainers = teams.gnome.members;
   };
-}
+})

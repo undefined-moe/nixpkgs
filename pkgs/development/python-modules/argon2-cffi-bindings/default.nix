@@ -1,14 +1,16 @@
-{ lib
-, buildPythonPackage
-, fetchPypi
-, libargon2
-, cffi
-, setuptools-scm
+{
+  lib,
+  buildPythonPackage,
+  fetchPypi,
+  libargon2,
+  cffi,
+  setuptools-scm,
 }:
 
 buildPythonPackage rec {
   pname = "argon2-cffi-bindings";
   version = "21.2.0";
+  format = "setuptools";
 
   src = fetchPypi {
     inherit pname version;
@@ -22,9 +24,7 @@ buildPythonPackage rec {
     cffi
   ];
 
-  propagatedBuildInputs = [
-    cffi
-  ];
+  propagatedBuildInputs = [ cffi ];
 
   env.ARGON2_CFFI_USE_SYSTEM = 1;
 

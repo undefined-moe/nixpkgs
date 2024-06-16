@@ -1,23 +1,29 @@
 { fetchFromGitHub
 , lib
+, openssl
+, pkg-config
 , protobuf
-, rocksdb
+, rocksdb_8_3
 , rust-jemalloc-sys-unprefixed
 , rustPlatform
-, rustc-wasm32
+, rustc
 , stdenv
 , Security
 , SystemConfiguration
 }:
+
+let
+  rocksdb = rocksdb_8_3;
+in
 rustPlatform.buildRustPackage rec {
   pname = "polkadot";
-  version = "1.3.0";
+  version = "1.12.0";
 
   src = fetchFromGitHub {
     owner = "paritytech";
     repo = "polkadot-sdk";
     rev = "polkadot-v${version}";
-    hash = "sha256-7hCQdJHzuPQTNZFDGEZG/Q6G/Gh/gJANV5uiL/d6Pas=";
+    hash = "sha256-/m7Tg+9JHbnwKwWPY8gWIJkIHktGFlqcrbLLgNWjfwU=";
 
     # the build process of polkadot requires a .git folder in order to determine
     # the git commit hash that is being built and add it to the version string.
@@ -41,9 +47,13 @@ rustPlatform.buildRustPackage rec {
   cargoLock = {
     lockFile = ./Cargo.lock;
     outputHashes = {
-      "ark-secret-scalar-0.0.2" = "sha256-GROzlo+1QQ8wd090/esQRmaV8KWjNEfUlFlldnME28A=";
-      "common-0.1.0" = "sha256-ru++KG2ZZqa/wDGnKF/VfWnazHRSpOAD0WYb7rHlpCU=";
-      "fflonk-0.1.0" = "sha256-MNvlePHQdY8DiOq6w7Hc1pgn7G58GDTeghCKHJdUy7E=";
+      "ark-secret-scalar-0.0.2" = "sha256-91sODxaj0psMw0WqigMCGO5a7+NenAsRj5ZmW6C7lvc=";
+      "ckb-merkle-mountain-range-0.6.0" = "sha256-oTe1l406lTpgOefPai664JYwzezLjkIDXpiZTfjbd28=";
+      "common-0.1.0" = "sha256-LHz2dK1p8GwyMimlR7AxHLz1tjTYolPwdjP7pxork1o=";
+      "fflonk-0.1.0" = "sha256-+BvZ03AhYNP0D8Wq9EMsP+lSgPA6BBlnWkoxTffVLwo=";
+      "litep2p-0.3.0" = "sha256-y0my2vi0+2CWNOtCh/vtsUbIcU1iNSFAJbLiCktEcOc=";
+      "sp-ark-bls12-381-0.4.2" = "sha256-nNr0amKhSvvI9BlsoP+8v6Xppx/s7zkf0l9Lm3DW8w8=";
+      "sp-crypto-ec-utils-0.4.1" = "sha256-/Sw1ZM/JcJBokFE4y2mv/P43ciTL5DEm0PDG0jZvMkI=";
     };
   };
 
@@ -57,17 +67,22 @@ rustPlatform.buildRustPackage rec {
   doCheck = false;
 
   nativeBuildInputs = [
+    pkg-config
     rustPlatform.bindgenHook
-    rustc-wasm32
-    rustc-wasm32.llvmPackages.lld
+    rustc
+    rustc.llvmPackages.lld
   ];
 
   # NOTE: jemalloc is used by default on Linux with unprefixed enabled
-  buildInputs = lib.optionals stdenv.isLinux [ rust-jemalloc-sys-unprefixed ] ++
+  buildInputs = [ openssl ] ++
+    lib.optionals stdenv.isLinux [ rust-jemalloc-sys-unprefixed ] ++
     lib.optionals stdenv.isDarwin [ Security SystemConfiguration ];
 
-  # NOTE: we need to force lld otherwise rust-lld is not found for wasm32 target
-  CARGO_TARGET_WASM32_UNKNOWN_UNKNOWN_LINKER = "lld";
+  # NOTE: disable building `core`/`std` in wasm environment since rust-src isn't
+  # available for `rustc-wasm32`
+  WASM_BUILD_STD = 0;
+
+  OPENSSL_NO_VENDOR = 1;
   PROTOC = "${protobuf}/bin/protoc";
   ROCKSDB_LIB_DIR = "${rocksdb}/lib";
 
@@ -76,6 +91,10 @@ rustPlatform.buildRustPackage rec {
     homepage = "https://polkadot.network";
     license = licenses.gpl3Only;
     maintainers = with maintainers; [ akru andresilva FlorianFranzen RaghavSood ];
-    platforms = platforms.unix;
+    # See Iso::from_arch in src/isa/mod.rs in cranelift-codegen-meta.
+    platforms = intersectLists platforms.unix (platforms.aarch64 ++ platforms.s390x ++ platforms.riscv64 ++ platforms.x86);
+    # See comment about wasm32-unknown-unknown in rustc.nix.
+    broken = lib.any (a: lib.hasAttr a stdenv.hostPlatform.gcc) [ "cpu" "float-abi" "fpu" ] ||
+      !stdenv.hostPlatform.gcc.thumb or true;
   };
 }

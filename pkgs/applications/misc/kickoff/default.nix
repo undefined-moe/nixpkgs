@@ -10,16 +10,16 @@
 
 rustPlatform.buildRustPackage rec {
   pname = "kickoff";
-  version = "0.7.1";
+  version = "0.7.3";
 
   src = fetchFromGitHub {
     owner = "j0ru";
     repo = pname;
     rev = "v${version}";
-    hash = "sha256-9QupKpB3T/6gdGSeLjRknjPdgOzbfzEeJreIamWwpSw=";
+    hash = "sha256-ha1pRViiOH0U0djUq1x8TIpVoUMn8l+2pA//YP70jdk=";
   };
 
-  cargoHash = "sha256-a7FZpMtgTdqpLV/OfgN4W4GpTJlkfEtPO7F//FmVA/s=";
+  cargoHash = "sha256-pdncUUGSfsn35VpwuNWZ/0DAIImBLAm0LyPbqQ06Xho=";
 
   libPath = lib.makeLibraryPath [
     wayland
@@ -35,6 +35,7 @@ rustPlatform.buildRustPackage rec {
 
   meta = with lib; {
     description = "Minimalistic program launcher";
+    mainProgram = "kickoff";
     homepage = "https://github.com/j0ru/kickoff";
     license = licenses.gpl3Plus;
     maintainers = with maintainers; [ pyxels ];

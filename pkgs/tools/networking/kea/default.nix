@@ -23,11 +23,11 @@
 
 stdenv.mkDerivation rec {
   pname = "kea";
-  version = "2.4.0"; # only even minor versions are stable
+  version = "2.6.0"; # only even minor versions are stable
 
   src = fetchurl {
     url = "https://ftp.isc.org/isc/${pname}/${version}/${pname}-${version}.tar.gz";
-    hash = "sha256-OjPNCNwzGf9UTmu/LAQpBCEG9AUevhFdwbsmJclQA/c=";
+    hash = "sha256-IHzq4z6zuB7E5qxWBSSahbk3eTM7YqrfOeSJ8R283I0=";
   };
 
   patches = [
@@ -87,7 +87,6 @@ stdenv.mkDerivation rec {
   passthru.tests = {
     kea = nixosTests.kea;
     prefix-delegation = nixosTests.systemd-networkd-ipv6-prefix-delegation;
-    prometheus-exporter = nixosTests.prometheus-exporters.kea;
     networking-scripted = lib.recurseIntoAttrs { inherit (nixosTests.networking.scripted) dhcpDefault dhcpSimple dhcpOneIf; };
     networking-networkd = lib.recurseIntoAttrs { inherit (nixosTests.networking.networkd) dhcpDefault dhcpSimple dhcpOneIf; };
   };

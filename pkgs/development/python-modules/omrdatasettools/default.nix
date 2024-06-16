@@ -1,26 +1,28 @@
-{ lib
-, buildPythonPackage
-, fetchPypi
-, h5py
-, ipython
-, lxml
-, mung
-, muscima
-, numpy
-, pillow
-, pytestCheckHook
-, scikit-image
-, sphinx-rtd-theme
-, sympy
-, pandas
-, pyhamcrest
-, tqdm
-, twine
+{
+  lib,
+  buildPythonPackage,
+  fetchPypi,
+  h5py,
+  ipython,
+  lxml,
+  mung,
+  muscima,
+  numpy,
+  pillow,
+  pytestCheckHook,
+  scikit-image,
+  sphinx-rtd-theme,
+  sympy,
+  pandas,
+  pyhamcrest,
+  tqdm,
+  twine,
 }:
 
 buildPythonPackage rec {
   pname = "omrdatasettools";
   version = "1.4.0";
+  format = "setuptools";
 
   src = fetchPypi {
     inherit pname version;
@@ -44,9 +46,7 @@ buildPythonPackage rec {
     ipython
   ];
 
-  nativeCheckInputs = [
-    pytestCheckHook
-  ];
+  nativeCheckInputs = [ pytestCheckHook ];
 
   disabledTestPaths = [
     # The download tests require internet access

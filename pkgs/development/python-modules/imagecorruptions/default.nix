@@ -1,14 +1,16 @@
-{ buildPythonPackage
-, fetchPypi
-, numpy
-, scikit-image
-, lib
-, opencv4
+{
+  buildPythonPackage,
+  fetchPypi,
+  numpy,
+  scikit-image,
+  lib,
+  opencv4,
 }:
 
 buildPythonPackage rec {
   pname = "imagecorruptions";
   version = "1.1.2";
+  format = "setuptools";
 
   src = fetchPypi {
     inherit pname version;

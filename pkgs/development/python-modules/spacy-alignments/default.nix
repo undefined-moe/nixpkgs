@@ -1,18 +1,20 @@
-{ lib
-, stdenv
-, cargo
-, fetchPypi
-, buildPythonPackage
-, isPy3k
-, rustPlatform
-, rustc
-, setuptools-rust
-, libiconv
+{
+  lib,
+  stdenv,
+  cargo,
+  fetchPypi,
+  buildPythonPackage,
+  isPy3k,
+  rustPlatform,
+  rustc,
+  setuptools-rust,
+  libiconv,
 }:
 
 buildPythonPackage rec {
   pname = "spacy-alignments";
   version = "0.9.0";
+  format = "setuptools";
 
   disabled = !isPy3k;
 

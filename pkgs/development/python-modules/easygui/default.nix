@@ -1,17 +1,21 @@
-{ lib, fetchPypi, buildPythonPackage, tkinter }:
+{
+  lib,
+  fetchPypi,
+  buildPythonPackage,
+  tkinter,
+}:
 
 buildPythonPackage rec {
   pname = "easygui";
   version = "0.98.3";
+  format = "setuptools";
 
   src = fetchPypi {
     inherit pname version;
     hash = "sha256-1lP/ee4fQvY7WgkPL5jOAjNdhq2JY7POJmGAXK/pmgQ=";
   };
 
-  propagatedBuildInputs = [
-    tkinter
-  ];
+  propagatedBuildInputs = [ tkinter ];
 
   doCheck = false; # No tests available
 

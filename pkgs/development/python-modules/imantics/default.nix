@@ -1,16 +1,18 @@
-{ buildPythonPackage
-, fetchFromGitHub
-, lib
-, numpy
-, opencv4
-, lxml
-, xmljson
-, pytestCheckHook
+{
+  buildPythonPackage,
+  fetchFromGitHub,
+  lib,
+  numpy,
+  opencv4,
+  lxml,
+  xmljson,
+  pytestCheckHook,
 }:
 
 buildPythonPackage rec {
   pname = "imantics";
   version = "0.1.12";
+  format = "setuptools";
 
   src = fetchFromGitHub {
     owner = "jsbroks";

@@ -1,15 +1,17 @@
-{ lib
-, buildPythonPackage
-, fetchpatch
-, fetchPypi
-, docutils
-, mistune
-, pygments
+{
+  lib,
+  buildPythonPackage,
+  fetchpatch,
+  fetchPypi,
+  docutils,
+  mistune,
+  pygments,
 }:
 
 buildPythonPackage rec {
   pname = "m2r";
   version = "0.3.1";
+  format = "setuptools";
 
   src = fetchPypi {
     inherit pname version;
@@ -30,7 +32,10 @@ buildPythonPackage rec {
       --replace "optional" "positional"
   '';
 
-  propagatedBuildInputs = [ mistune docutils ];
+  propagatedBuildInputs = [
+    mistune
+    docutils
+  ];
 
   nativeCheckInputs = [ pygments ];
 

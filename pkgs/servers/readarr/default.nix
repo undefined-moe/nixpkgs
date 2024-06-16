@@ -8,13 +8,13 @@ let
     x86_64-darwin = "x64";
   }."${stdenv.hostPlatform.system}" or (throw "Unsupported system: ${stdenv.hostPlatform.system}");
   hash = {
-    x64-linux_hash = "sha256-XWKslumO6o0kn9JMFTTuDTDALX6r4rzEyFFj2w13cYc=";
-    arm64-linux_hash = "sha256-rsgyTgSW1w/zrXbOvwbJ8KTRK6HheKpACoR3Tjw5z+k=";
-    x64-osx_hash = "sha256-tJkYWvJfxF2zMl1TEG5qhoV2qKya0bzIitNVIaeRLSI=";
+    x64-linux_hash = "sha256-JKGLMu7rIhMAJM2bThTQiHDgc449gWQwmku/yQEAXL4=";
+    arm64-linux_hash = "sha256-1gzjriw4osMp8w2Auwu+PPCz0qi7hwTY+1tlcb2GxeI=";
+    x64-osx_hash = "sha256-eYUCmtG2yz/IoGUQJPa5z3UGJyXafsNG/CFIBBoz0hQ=";
   }."${arch}-${os}_hash";
 in stdenv.mkDerivation rec {
   pname = "readarr";
-  version = "0.3.10.2287";
+  version = "0.3.27.2538";
 
   src = fetchurl {
     url = "https://github.com/Readarr/Readarr/releases/download/v${version}/Readarr.develop.${version}.${os}-core-${arch}.tar.gz";
@@ -42,7 +42,7 @@ in stdenv.mkDerivation rec {
   };
 
   meta = with lib; {
-    description = "A Usenet/BitTorrent ebook downloader";
+    description = "Usenet/BitTorrent ebook downloader";
     homepage = "https://readarr.com";
     license = licenses.gpl3;
     maintainers = [ maintainers.jocelynthode ];

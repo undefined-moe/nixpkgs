@@ -1,5 +1,4 @@
 { lib
-, buildGoPackage
 , fetchFromGitHub
 , buildGoModule
 , sqlite
@@ -61,7 +60,7 @@ buildGoModule rec {
   ];
 
   meta = with lib; {
-    description = "A simple server for sending and receiving messages in real-time per WebSocket";
+    description = "Simple server for sending and receiving messages in real-time per WebSocket";
     homepage = "https://gotify.net";
     license = licenses.mit;
     maintainers = with maintainers; [ doronbehar ];

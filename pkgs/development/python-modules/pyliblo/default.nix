@@ -1,15 +1,17 @@
-{ lib
-, buildPythonPackage
-, fetchurl
-, isPyPy
-, pythonAtLeast
-, liblo
-, cython
+{
+  lib,
+  buildPythonPackage,
+  fetchurl,
+  isPyPy,
+  pythonAtLeast,
+  liblo,
+  cython_0,
 }:
 
 buildPythonPackage rec {
   pname = "pyliblo";
   version = "0.10.0";
+  format = "setuptools";
   disabled = isPyPy;
 
   src = fetchurl {
@@ -24,12 +26,13 @@ buildPythonPackage rec {
     })
   ];
 
-  buildInputs = [ liblo cython ];
+  build-system = [ cython_0 ];
+
+  buildInputs = [ liblo ];
 
   meta = with lib; {
     homepage = "https://das.nasophon.de/pyliblo/";
     description = "Python wrapper for the liblo OSC library";
     license = licenses.lgpl21Only;
   };
-
 }

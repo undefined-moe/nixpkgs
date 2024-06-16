@@ -4,6 +4,7 @@
 , lib
 , stdenv
 , gradle
+, extraConfig ? [ ]
 , rsync
 , runCommand
 , testers
@@ -38,7 +39,7 @@ jdk.overrideAttrs (finalAttrs: oldAttrs: {
 
     # `/usr/bin/rsync` is invoked to copy the source tree. We don't have that.
     for file in $(find installers -name "build.gradle"); do
-      substituteInPlace $file --replace "workingDir '/usr/bin'" "workingDir '.'"
+      substituteInPlace $file --replace-warn "workingDir '/usr/bin'" "workingDir '.'"
     done
   '';
 
@@ -51,12 +52,13 @@ jdk.overrideAttrs (finalAttrs: oldAttrs: {
         if stdenv.isDarwin then
           ":installers:mac:tar:packageBuildResults"
         else ":installers:linux:universal:tar:packageBuildResults";
+      extra_config = builtins.concatStringsSep " " extraConfig;
     in
     ''
       runHook preBuild
 
       # Corretto's actual built is triggered via `gradle`.
-      gradle --console=plain --no-daemon ${task}
+      gradle -Pcorretto.extra_config="${extra_config}" --console=plain --no-daemon ${task}
 
       # Prepare for the installPhase so that it looks like if a normal
       # OpenJDK had been built.
@@ -104,12 +106,14 @@ jdk.overrideAttrs (finalAttrs: oldAttrs: {
       };
     };
 
-  meta = with lib; {
+
+  # Some of the OpenJDK derivation set their `pos` by hand. We need to
+  # overwrite this in order to point to Corretto, not OpenJDK.
+  pos = __curPos;
+  meta = with lib; oldAttrs.meta // {
     homepage = "https://aws.amazon.com/corretto";
     license = licenses.gpl2Only;
     description = "Amazon's distribution of OpenJDK";
-    platforms = jdk.meta.platforms;
-    mainProgram = "java";
     maintainers = with maintainers; [ rollf ];
   };
 })

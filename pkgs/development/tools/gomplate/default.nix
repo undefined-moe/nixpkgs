@@ -1,27 +1,20 @@
-# Gomplate 3.x does not build with go > 1.20.
-# Version 4 of gomplate (yet unreleased) should not have this issue.
-#
-# see https://github.com/hairyhenderson/gomplate/issues/1872
-
 { lib
-#, buildGoModule
-, buildGo120Module
+, buildGoModule
 , fetchFromGitHub
 }:
 
-# buildGoModule rec {
-buildGo120Module rec {
+buildGoModule rec {
   pname = "gomplate";
-  version = "3.11.5";
+  version = "3.11.8";
 
   src = fetchFromGitHub {
     owner = "hairyhenderson";
     repo = pname;
     rev = "refs/tags/v${version}";
-    hash = "sha256-cBSOfjU7A6B7+5zQLGtGLx9kORsjH/IzGgkjwjjTcYY=";
+    hash = "sha256-pE9TLEBY1KQvgMFwVJfn5kojESqZURcbCwRt4jrexhk=";
   };
 
-  vendorHash = "sha256-thsa15CDD7+gCSPSU4xDbovETREeuL4gV6TjdcImj9w=";
+  vendorHash = "sha256-09QUEudbWnO11iwJafF9zoYqbTr7SVBUiPWTHGnZ06Q=";
 
   postPatch = ''
     # some tests require network access
@@ -45,7 +38,8 @@ buildGo120Module rec {
   ];
 
   meta = with lib; {
-    description = "A flexible commandline tool for template rendering";
+    description = "Flexible commandline tool for template rendering";
+    mainProgram = "gomplate";
     homepage = "https://gomplate.ca/";
     changelog = "https://github.com/hairyhenderson/gomplate/releases/tag/v${version}";
     license = licenses.mit;

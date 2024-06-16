@@ -21,7 +21,7 @@
 , nss
 , libical
 , gperf
-, wrapGAppsHook
+, wrapGAppsHook3
 , glib-networking
 , gsettings-desktop-schemas
 , pcre
@@ -33,7 +33,6 @@
 , enableOAuth2 ? stdenv.isLinux
 , webkitgtk_4_1
 , webkitgtk_6_0
-, libaccounts-glib
 , json-glib
 , glib
 , gtk3
@@ -51,13 +50,13 @@
 
 stdenv.mkDerivation rec {
   pname = "evolution-data-server";
-  version = "3.50.1";
+  version = "3.52.2";
 
   outputs = [ "out" "dev" ];
 
   src = fetchurl {
     url = "mirror://gnome/sources/evolution-data-server/${lib.versions.majorMinor version}/${pname}-${version}.tar.xz";
-    sha256 = "kfT/w4objS/ok5g0RJrFQcC/9KObRE7cKpUpNEoo6Yo=";
+    hash = "sha256-oAakTtyzjSb/scYuHV0KMdHy5ZB1Vl4mx5ou4BxFp+U=";
   };
 
   patches = [
@@ -85,7 +84,7 @@ stdenv.mkDerivation rec {
     gettext
     python3
     gperf
-    wrapGAppsHook
+    wrapGAppsHook3
     gobject-introspection
     vala
   ];
@@ -107,8 +106,6 @@ stdenv.mkDerivation rec {
     libphonenumber
     boost
     protobuf
-  ] ++ lib.optionals stdenv.isLinux [
-    libaccounts-glib
   ] ++ lib.optionals stdenv.isDarwin [
     libiconv
   ] ++ lib.optionals withGtk3 [
@@ -184,7 +181,7 @@ stdenv.mkDerivation rec {
 
   meta = with lib; {
     description = "Unified backend for programs that work with contacts, tasks, and calendar information";
-    homepage = "https://wiki.gnome.org/Apps/Evolution";
+    homepage = "https://gitlab.gnome.org/GNOME/evolution-data-server";
     license = licenses.lgpl2Plus;
     maintainers = teams.gnome.members;
     platforms = platforms.unix;

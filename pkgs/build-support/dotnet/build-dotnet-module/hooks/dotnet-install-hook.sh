@@ -27,10 +27,10 @@ dotnetInstallHook() {
             runtimeIdFlags+=("--runtime @runtimeId@")
         fi
 
-        env dotnet publish ${project-} \
+        dotnet publish ${project-} \
             -p:ContinuousIntegrationBuild=true \
             -p:Deterministic=true \
-            --output "$out/lib/${pname}" \
+            --output "${installPath-$out/lib/$pname}" \
             --configuration "@buildType@" \
             --no-build \
             ${runtimeIdFlags[@]} \
@@ -40,7 +40,7 @@ dotnetInstallHook() {
 
     dotnetPack() {
         local -r project="${1-}"
-        env dotnet pack ${project-} \
+        dotnet pack ${project-} \
             -p:ContinuousIntegrationBuild=true \
             -p:Deterministic=true \
             --output "$out/share" \

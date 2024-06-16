@@ -11,17 +11,18 @@
 , hamlib
 , qtkeychain
 , pkg-config
+, cups
 }:
 
 stdenv.mkDerivation rec {
   pname = "qlog";
-  version = "0.29.2";
+  version = "0.35.2";
 
   src = fetchFromGitHub {
     owner = "foldynl";
     repo = "QLog";
     rev = "v${version}";
-    hash = "sha256-g7WgFQPMOaD+3YllZqpykslmPYT/jNVK7/1xaPdbti4=";
+    hash = "sha256-3ht3/J4uJ7Nyfp0xpVDYa8GnV/EvHjf09XGSEBLRGZU=";
     fetchSubmodules = true;
   };
 
@@ -35,7 +36,9 @@ stdenv.mkDerivation rec {
     qtwebchannel
     hamlib
     qtkeychain
-  ];
+  ] ++ (lib.optionals stdenv.isDarwin [
+    cups
+  ]);
 
   nativeBuildInputs = [
     wrapQtAppsHook
@@ -45,9 +48,10 @@ stdenv.mkDerivation rec {
 
   meta = with lib; {
     description = "Amateur radio logbook software";
+    mainProgram = "qlog";
     license = with licenses; [ gpl3Only ];
     homepage = "https://github.com/foldynl/QLog";
-    maintainers = with maintainers; [ mkg20001 ];
+    maintainers = with maintainers; [ oliver-koss mkg20001 ];
     platforms = with platforms; unix;
   };
 }

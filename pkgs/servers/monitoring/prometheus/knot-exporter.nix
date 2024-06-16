@@ -6,13 +6,13 @@
 
 python3.pkgs.buildPythonApplication rec {
   pname = "knot-exporter";
-  version = "3.3.2";
+  version = "3.3.6";
   pyproject = true;
 
   src = fetchPypi {
     pname = "knot_exporter";
     inherit version;
-    hash = "sha256-/TBzq9MhYb664TsSD46Ep7gOkLBmmPSK9d89xlgvbSw=";
+    hash = "sha256-4Fdbu08RbivZF+Hnk+tI1DW9PyzQTI0TngAbZ60CcO8=";
   };
 
   nativeBuildInputs = [

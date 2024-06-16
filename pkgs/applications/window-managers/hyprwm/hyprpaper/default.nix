@@ -3,8 +3,10 @@
 , fetchFromGitHub
 , cmake
 , file
+, hyprlang
 , libGL
 , libjpeg
+, libwebp
 , mesa
 , pango
 , pkg-config
@@ -15,13 +17,13 @@
 
 stdenv.mkDerivation (finalAttrs: {
   pname = "hyprpaper";
-  version = "0.4.0";
+  version = "0.7.0";
 
   src = fetchFromGitHub {
     owner = "hyprwm";
     repo = finalAttrs.pname;
     rev = "v${finalAttrs.version}";
-    hash = "sha256-V5ulB9CkGh1ghiC4BKvRdoYKZzpaiOKzAOUmJIFkgM0=";
+    hash = "sha256-l13c8ALA7ZKDgluYA1C1OfkDGYD6e1/GR6LJnxCLRhA=";
   };
 
   nativeBuildInputs = [
@@ -32,8 +34,10 @@ stdenv.mkDerivation (finalAttrs: {
 
   buildInputs = [
     file
+    hyprlang
     libGL
     libjpeg
+    libwebp
     mesa
     pango
     wayland
@@ -59,7 +63,7 @@ stdenv.mkDerivation (finalAttrs: {
 
   meta = with lib; {
     inherit (finalAttrs.src.meta) homepage;
-    description = "A blazing fast wayland wallpaper utility";
+    description = "Blazing fast wayland wallpaper utility";
     license = licenses.bsd3;
     maintainers = with maintainers; [ wozeparrot fufexan ];
     inherit (wayland.meta) platforms;

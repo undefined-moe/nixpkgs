@@ -1,14 +1,16 @@
-{ lib
-, buildPythonPackage
-, fetchPypi
-, pytestCheckHook
-, pyzmq
-, twisted
+{
+  lib,
+  buildPythonPackage,
+  fetchPypi,
+  pytestCheckHook,
+  pyzmq,
+  twisted,
 }:
 
 buildPythonPackage rec {
   pname = "txzmq";
   version = "1.0.0";
+  format = "setuptools";
 
   src = fetchPypi {
     inherit version;
@@ -21,9 +23,7 @@ buildPythonPackage rec {
     twisted
   ];
 
-  nativeCheckInputs = [
-    pytestCheckHook
-  ];
+  nativeCheckInputs = [ pytestCheckHook ];
 
   pythonImportsCheck = [ "txzmq" ];
 

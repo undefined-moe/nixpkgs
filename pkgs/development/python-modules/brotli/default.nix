@@ -1,12 +1,14 @@
-{ lib
-, buildPythonPackage
-, fetchFromGitHub
-, pytestCheckHook
+{
+  lib,
+  buildPythonPackage,
+  fetchFromGitHub,
+  pytestCheckHook,
 }:
 
 buildPythonPackage rec {
   pname = "brotli";
   version = "1.1.0";
+  format = "setuptools";
 
   src = fetchFromGitHub {
     owner = "google";
@@ -20,13 +22,9 @@ buildPythonPackage rec {
   # only returns information how to really build
   dontConfigure = true;
 
-  nativeCheckInputs = [
-    pytestCheckHook
-  ];
+  nativeCheckInputs = [ pytestCheckHook ];
 
-  pytestFlagsArray = [
-    "python/tests"
-  ];
+  pytestFlagsArray = [ "python/tests" ];
 
   meta = with lib; {
     homepage = "https://github.com/google/brotli";

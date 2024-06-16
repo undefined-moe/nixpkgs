@@ -1,21 +1,23 @@
 { lib
-, buildGo121Module
+, buildGoModule
 , fetchFromGitHub
 , installShellFiles
+, testers
+, k0sctl
 }:
 
-buildGo121Module rec {
+buildGoModule rec {
   pname = "k0sctl";
-  version = "0.16.0";
+  version = "0.18.0";
 
   src = fetchFromGitHub {
     owner = "k0sproject";
     repo = pname;
     rev = "v${version}";
-    hash = "sha256-DUDvsF4NCFimpW9isqEhodieiJXwjhwhfXR2t/ho3kE=";
+    hash = "sha256-bFNlNNc5PGim2yCX8YmWzPp1EzMrsSF3d/E+mf9Pw20=";
   };
 
-  vendorHash = "sha256-eJTVUSAcgE1AaOCEEc202sC0yIfMj30UoK/ObowJ9Zk=";
+  vendorHash = "sha256-pKvb7pKuGfa8Y+FvLwyWcYuuSszLin2+jFCQ7cPkkwQ=";
 
   ldflags = [
     "-s"
@@ -27,9 +29,6 @@ buildGo121Module rec {
 
   nativeBuildInputs = [ installShellFiles ];
 
-  # https://github.com/k0sproject/k0sctl/issues/569
-  checkFlags = [ "-skip=^Test(Unmarshal|VersionDefaulting)/version_not_given$" ];
-
   postInstall = ''
     for shell in bash zsh fish; do
       installShellCompletion --cmd ${pname} \
@@ -37,11 +36,18 @@ buildGo121Module rec {
     done
   '';
 
+  passthru.tests.version = testers.testVersion {
+    package = k0sctl;
+    command = "k0sctl version";
+    # See https://github.com/carlmjohnson/versioninfo/discussions/12
+    version = "version: (devel)\ncommit: v${version}\n";
+  };
+
   meta = with lib; {
-    description = "A bootstrapping and management tool for k0s clusters.";
+    description = "Bootstrapping and management tool for k0s clusters";
     homepage = "https://k0sproject.io/";
     license = licenses.asl20;
-    mainProgram = pname;
+    mainProgram = "k0sctl";
     maintainers = with maintainers; [ nickcao qjoly ];
   };
 }

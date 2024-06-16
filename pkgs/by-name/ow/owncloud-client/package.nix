@@ -17,13 +17,13 @@
 
 stdenv.mkDerivation rec {
   pname = "owncloud-client";
-  version = "5.0.0";
+  version = "5.3.0";
 
   src = fetchFromGitHub {
     owner = "owncloud";
     repo = "client";
     rev = "refs/tags/v${version}";
-    hash = "sha256-SSMNmWrCT1sGa38oY8P84QNedNkQPcIRWrV9B65B5X8=";
+    hash = "sha256-2BM5XoblPwI2xr0e9VHiN4ePkyUx+NyMDY7HkWa9uZM=";
   };
 
   nativeBuildInputs = [

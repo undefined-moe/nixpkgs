@@ -12,13 +12,13 @@
 
 buildPythonApplication rec {
   pname = "git-machete";
-  version = "3.20.0";
+  version = "3.26.0";
 
   src = fetchFromGitHub {
     owner = "virtuslab";
     repo = pname;
     rev = "v${version}";
-    hash = "sha256-6TntyAkDIcCVcAsNdAlgvKYO7Db0oMDWKW92rMRIDI4=";
+    hash = "sha256-6q0XunfzURfcvce/BLtJhDeI1fPusN+07S1SegLDkwY=";
   };
 
   nativeBuildInputs = [ installShellFiles ];
@@ -55,5 +55,6 @@ buildPythonApplication rec {
     changelog = "https://github.com/VirtusLab/git-machete/releases/tag/v${version}";
     license = licenses.mit;
     maintainers = with maintainers; [ blitz ];
+    mainProgram = "git-machete";
   };
 }

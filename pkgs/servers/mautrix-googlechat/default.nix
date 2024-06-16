@@ -64,9 +64,10 @@
 
   meta = with lib; {
     homepage = "https://github.com/mautrix/googlechat";
-    description = "A Matrix-Google Chat puppeting bridge";
+    description = "Matrix-Google Chat puppeting bridge";
     license = licenses.agpl3Plus;
     platforms = platforms.linux;
     maintainers = with maintainers; [ arcnmx ];
+    mainProgram = "mautrix-googlechat";
   };
 }

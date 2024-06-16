@@ -5,7 +5,7 @@
 , copyDesktopItems
 , makeWrapper
 , writeText
-, wrapGAppsHook
+, wrapGAppsHook3
 , autoPatchelfHook
 , callPackage
 
@@ -35,6 +35,7 @@
 , waylandSupport ? stdenv.isLinux
 , libxkbcommon
 , libdrm
+, libGL
 
 , mediaSupport ? true
 , ffmpeg
@@ -82,14 +83,14 @@ let
       stdenv.cc.libc
       zlib
     ] ++ lib.optionals libnotifySupport [ libnotify ]
-      ++ lib.optionals waylandSupport [ libxkbcommon libdrm ]
+      ++ lib.optionals waylandSupport [ libxkbcommon libdrm libGL ]
       ++ lib.optionals pipewireSupport [ pipewire ]
       ++ lib.optionals pulseaudioSupport [ libpulseaudio ]
       ++ lib.optionals libvaSupport [ libva ]
       ++ lib.optionals mediaSupport [ ffmpeg ]
   );
 
-  version = "13.0.1";
+  version = "13.0.16";
 
   sources = {
     x86_64-linux = fetchurl {
@@ -101,7 +102,7 @@ let
         "https://tor.eff.org/dist/mullvadbrowser/${version}/mullvad-browser-linux-x86_64-${version}.tar.xz"
         "https://tor.calyxinstitute.org/dist/mullvadbrowser/${version}/mullvad-browser-linux-x86_64-${version}.tar.xz"
       ];
-      hash = "sha256-VYkRHWyTAAt5P7jnNuf4s2bOv36LuqcTMMKOLRGE9FQ=";
+      hash = "sha256-+8jur2Fc+fhrWO9xyaSuwzUZnLLhTP/uz15+EX6E7K4=";
     };
   };
 
@@ -124,7 +125,7 @@ stdenv.mkDerivation rec {
 
   src = sources.${stdenv.hostPlatform.system} or (throw "unsupported system: ${stdenv.hostPlatform.system}");
 
-  nativeBuildInputs = [ copyDesktopItems makeWrapper wrapGAppsHook autoPatchelfHook ];
+  nativeBuildInputs = [ copyDesktopItems makeWrapper wrapGAppsHook3 autoPatchelfHook ];
   buildInputs = [
     gtk3
     alsa-lib
@@ -136,7 +137,7 @@ stdenv.mkDerivation rec {
   allowSubstitutes = false;
 
   desktopItems = [(makeDesktopItem {
-    name = "mullvadbrowser";
+    name = "mullvad-browser";
     exec = "mullvad-browser %U";
     icon = "mullvad-browser";
     desktopName = "Mullvad Browser";
@@ -207,8 +208,8 @@ stdenv.mkDerivation rec {
     # fonts.conf; upstream uses FONTCONFIG_PATH, but FC_DEBUG=1024
     # indicates the system fonts.conf being used instead.
     FONTCONFIG_FILE=$MB_IN_STORE/fontconfig/fonts.conf
-    sed -i "$FONTCONFIG_FILE" \
-      -e "s,<dir>fonts</dir>,<dir>$MB_IN_STORE/fonts</dir>,"
+    substituteInPlace "$FONTCONFIG_FILE" \
+      --replace-fail '<dir prefix="cwd">fonts</dir>' "<dir>$MB_IN_STORE/fonts</dir>"
 
     mkdir -p $out/bin
 
@@ -255,6 +256,7 @@ stdenv.mkDerivation rec {
 
   meta = with lib; {
     description = "Privacy-focused browser made in a collaboration between The Tor Project and Mullvad";
+    mainProgram = "mullvad-browser";
     homepage = "https://mullvad.net/en/browser";
     platforms = attrNames sources;
     maintainers = with maintainers; [ felschr panicgh ];

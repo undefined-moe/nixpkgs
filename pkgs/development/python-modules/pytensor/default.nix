@@ -1,41 +1,38 @@
-{ lib
-, buildPythonPackage
-, fetchFromGitHub
-, cython
-, versioneer
-, cons
-, etuples
-, filelock
-, logical-unification
-, minikanren
-, numpy
-, scipy
-, typing-extensions
-, jax
-, jaxlib
-, numba
-, numba-scipy
-, pytest-mock
-, pytestCheckHook
-, pythonOlder
-# Tensorflow is currently (2023/10/04) broken.
-# Thus, we don't provide this optional test dependency.
-# , tensorflow-probability
-, stdenv
+{
+  lib,
+  buildPythonPackage,
+  fetchFromGitHub,
+  cython,
+  versioneer,
+  cons,
+  etuples,
+  filelock,
+  logical-unification,
+  minikanren,
+  numpy,
+  scipy,
+  typing-extensions,
+  jax,
+  jaxlib,
+  numba,
+  pytest-mock,
+  pytestCheckHook,
+  pythonOlder,
+  tensorflow-probability,
 }:
 
 buildPythonPackage rec {
   pname = "pytensor";
-  version = "2.17.3";
+  version = "2.22.1";
   pyproject = true;
 
-  disabled = pythonOlder "3.9";
+  disabled = pythonOlder "3.10";
 
   src = fetchFromGitHub {
     owner = "pymc-devs";
     repo = "pytensor";
     rev = "refs/tags/rel-${version}";
-    hash = "sha256-FufPCFzSjG8BrHes7t3XsdovX9gqUBG0gMDGKvkRkSA=";
+    hash = "sha256-FG95+3g+DcqQkyJX3PavfyUWTINFLrgAPTaHYN/jk90=";
   };
 
   postPatch = ''
@@ -43,12 +40,12 @@ buildPythonPackage rec {
       --replace "versioneer[toml]==0.28" "versioneer[toml]"
   '';
 
-  nativeBuildInputs = [
+  build-system = [
     cython
     versioneer
   ];
 
-  propagatedBuildInputs = [
+  dependencies = [
     cons
     etuples
     filelock
@@ -63,21 +60,16 @@ buildPythonPackage rec {
     jax
     jaxlib
     numba
-    numba-scipy
     pytest-mock
     pytestCheckHook
-    # Tensorflow is currently (2023/10/04) broken.
-    # Thus, we don't provide this optional test dependency.
-    # tensorflow-probability
+    tensorflow-probability
   ];
 
   preBuild = ''
     export HOME=$(mktemp -d)
   '';
 
-  pythonImportsCheck = [
-    "pytensor"
-  ];
+  pythonImportsCheck = [ "pytensor" ];
 
   disabledTests = [
     # benchmarks (require pytest-benchmark):
@@ -86,8 +78,6 @@ buildPythonPackage rec {
     "test_logsumexp_benchmark"
     "test_scan_multiple_output"
     "test_vector_taps_benchmark"
-    # Temporarily disabled because of broken tensorflow-probability
-    "test_tfp_ops"
   ];
 
   disabledTestPaths = [
@@ -97,12 +87,15 @@ buildPythonPackage rec {
     "tests/sparse/sandbox/"
   ];
 
-  meta = with lib; {
+  meta = {
     description = "Python library to define, optimize, and efficiently evaluate mathematical expressions involving multi-dimensional arrays";
+    mainProgram = "pytensor-cache";
     homepage = "https://github.com/pymc-devs/pytensor";
     changelog = "https://github.com/pymc-devs/pytensor/releases";
-    license = licenses.bsd3;
-    maintainers = with maintainers; [ bcdarwin ];
-    broken = (stdenv.isLinux && stdenv.isAarch64);
+    license = lib.licenses.bsd3;
+    maintainers = with lib.maintainers; [
+      bcdarwin
+      ferrine
+    ];
   };
 }

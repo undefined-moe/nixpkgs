@@ -1,17 +1,19 @@
-{ lib
-, buildPythonPackage
-, isPy27
-, fetchPypi
-, setuptools-scm
-, six
-, dnspython
-, pycountry
-, pytestCheckHook
+{
+  lib,
+  buildPythonPackage,
+  isPy27,
+  fetchPypi,
+  setuptools-scm,
+  six,
+  dnspython,
+  pycountry,
+  pytestCheckHook,
 }:
 
 buildPythonPackage rec {
   pname = "formencode";
   version = "2.1.0";
+  format = "setuptools";
 
   disabled = isPy27;
 
