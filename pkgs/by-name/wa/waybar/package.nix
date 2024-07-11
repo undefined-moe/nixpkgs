@@ -73,8 +73,8 @@ let
   libcava.src = fetchFromGitHub {
     owner = "LukashonakV";
     repo = "cava";
-    rev = "0.10.1";
-    hash = "sha256-iIYKvpOWafPJB5XhDOSIW9Mb4I3A4pcgIIPQdQYEqUw=";
+    rev = "0.10.2";
+    hash = "sha256-jU7RQV2txruu/nUUl0TzjK4nai7G38J1rcTjO7UXumY=";
   };
 in
 stdenv.mkDerivation (finalAttrs: {
@@ -150,9 +150,10 @@ stdenv.mkDerivation (finalAttrs: {
 
   mesonFlags =
     (lib.mapAttrsToList lib.mesonEnable {
-      "cava" = cavaSupport;
+      "cava" = cavaSupport && lib.asserts.assertMsg sndioSupport "Sndio support is required for Cava";
       "dbusmenu-gtk" = traySupport;
       "jack" = jackSupport;
+      "libevdev" = evdevSupport;
       "libinput" = inputSupport;
       "libnl" = nlSupport;
       "libudev" = udevSupport;

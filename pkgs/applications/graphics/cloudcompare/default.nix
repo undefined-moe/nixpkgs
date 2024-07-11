@@ -11,7 +11,7 @@
 , flann
 , gdal
 , gmp
-, LASzip
+, laszip
 , mpfr
 , pdal
 , pcl
@@ -25,13 +25,13 @@
 
 mkDerivation rec {
   pname = "cloudcompare";
-  version = "2.13.1";
+  version = "2.13.2";
 
   src = fetchFromGitHub {
     owner = "CloudCompare";
     repo = "CloudCompare";
     rev = "v${version}";
-    hash = "sha256-QQwQt63tXxJnGaBLu+GvWkEazumYPhXnDe+giSu7wjk=";
+    hash = "sha256-KVbFGim2Nqhs5PAQiBNTmJStmnEINTeopiqqEBBniHc=";
     fetchSubmodules = true;
   };
 
@@ -48,7 +48,7 @@ mkDerivation rec {
     flann
     gdal
     gmp
-    LASzip
+    laszip
     mpfr
     pdal
     pcl

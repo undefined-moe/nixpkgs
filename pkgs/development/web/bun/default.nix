@@ -12,7 +12,7 @@
 }:
 
 stdenvNoCC.mkDerivation rec {
-  version = "1.1.10";
+  version = "1.1.18";
   pname = "bun";
 
   src = passthru.sources.${stdenvNoCC.hostPlatform.system} or (throw "Unsupported system: ${stdenvNoCC.hostPlatform.system}");
@@ -51,19 +51,19 @@ stdenvNoCC.mkDerivation rec {
     sources = {
       "aarch64-darwin" = fetchurl {
         url = "https://github.com/oven-sh/bun/releases/download/bun-v${version}/bun-darwin-aarch64.zip";
-        hash = "sha256-txTr+uYvGOsytyTO2mXZUQOOJMcNT4uyzNCdz4pn0AQ=";
+        hash = "sha256-USN4hMdTjoij1JQ3lWztk9ue4pB+kqaYvD7AuxWz4is=";
       };
       "aarch64-linux" = fetchurl {
         url = "https://github.com/oven-sh/bun/releases/download/bun-v${version}/bun-linux-aarch64.zip";
-        hash = "sha256-8Wp3RDvP2/tonU8ngDTWuGD1m7q7gxwnuwbxpc6N/+Y=";
+        hash = "sha256-JIaprZk36YW+oUe6DLWba0OIK69LuhVsq8cjnQ9o72A=";
       };
       "x86_64-darwin" = fetchurl {
-        url = "https://github.com/oven-sh/bun/releases/download/bun-v${version}/bun-darwin-x64.zip";
-        hash = "sha256-cV3NO0qGqZqSgVLj1U2bvQUqGzgGugLPwk4eq+XfjTU=";
+        url = "https://github.com/oven-sh/bun/releases/download/bun-v${version}/bun-darwin-x64-baseline.zip";
+        hash = "sha256-LSAfEQIXb0aQjVLaJ/4sDasVVAIxjUIMRQlMAzBlXEk=";
       };
       "x86_64-linux" = fetchurl {
         url = "https://github.com/oven-sh/bun/releases/download/bun-v${version}/bun-linux-x64.zip";
-        hash = "sha256-iQM/BtoaDBRlH/jx9qH6WlV2Ox7MbtWMzHc8RxVCHH0=";
+        hash = "sha256-n/HcFSSNtnmzEa4nBuzn8LuJ/IQ3/QUlTt3OO5T/ACQ=";
       };
     };
     updateScript = writeShellScript "update-bun" ''
@@ -92,7 +92,7 @@ stdenvNoCC.mkDerivation rec {
       lgpl21Only # javascriptcore and webkit
     ];
     mainProgram = "bun";
-    maintainers = with maintainers; [ DAlperin jk thilobillerbeck cdmistman coffeeispower ];
+    maintainers = with maintainers; [ DAlperin jk thilobillerbeck cdmistman coffeeispower diogomdp ];
     platforms = builtins.attrNames passthru.sources;
     # Broken for Musl at 2024-01-13, tracking issue:
     # https://github.com/NixOS/nixpkgs/issues/280716
