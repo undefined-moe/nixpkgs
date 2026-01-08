@@ -3,6 +3,7 @@
   stdenv,
   buildGoModule,
   fetchFromGitHub,
+  fetchpatch,
   libredirect,
   iana-etc,
   testers,
@@ -19,6 +20,15 @@ buildGoModule (finalAttrs: {
     tag = finalAttrs.version;
     hash = "sha256-R59I/xRr/JsRVfQGsZ5dzzQbpBOOCxhsr/q9QQ/Nang=";
   };
+
+  patches = [
+    # This patch can be removed in future versions
+    (fetchpatch {
+      name = "fix-seaweedfs-405-s3-startup";
+      url = "https://github.com/seaweedfs/seaweedfs/pull/7952.patch";
+      hash = "sha256-MkWUe08j5FqegIzPEnNYw1kpcTnp2Of5X7UXDCUiebo=";
+    })
+  ];
 
   vendorHash = "sha256-kTkEiUwUEXB3IPXW8LjdGSHXKGmes0rjueTNyf8Bgf0=";
 
